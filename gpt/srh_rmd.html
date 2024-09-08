@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chatbot with OpenAI</title>
+    <title>Custom OpenAI Assistant</title>
 </head>
 <body>
-    <h1>OpenAI Chatbot</h1>
+    <h1>My Custom GPT Assistant</h1>
     <div id="chatbox">
         <div id="messages"></div>
-        <input type="text" id="userInput" placeholder="로봇설계과 입학과 관련된 질문을 작성해보세요!" />
+        <input type="text" id="userInput" placeholder="Type your message here..." />
         <button onclick="sendMessage()">Send</button>
     </div>
 
@@ -26,7 +26,9 @@
                 },
                 body: JSON.stringify({
                     model: 'gpt-4',
-                    messages: [{role: 'user', content: userInput}]
+                    messages: [{ role: 'user', content: userInput }],
+                    // 커스텀 Assistant 사용
+                    assistant_id: 'asst_Mm019YNqP6syW41JyxdrXLDc' 
                 })
             });
 
