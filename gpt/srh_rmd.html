@@ -71,7 +71,7 @@
         }
 
         /* 사용자 메시지(오른쪽 정렬) */
-        #messages p:nth-child(odd) {
+        #messages p.user {
             align-self: flex-end;
             background-color: #333;
             color: white;
@@ -79,7 +79,7 @@
         }
 
         /* 봇 메시지(왼쪽 정렬) */
-        #messages p:nth-child(even) {
+        #messages p.bot {
             align-self: flex-start;
             background-color: #e0e0e0;
             color: #333;
@@ -156,7 +156,7 @@
 
             // 초기 인사말 표시
             const initialMessage = config.messages.find(msg => msg.role === 'assistant').content;
-            document.getElementById('messages').innerHTML += `<p><strong>설계봇:</strong> ${initialMessage}</p>`;
+            document.getElementById('messages').innerHTML += `<p class="bot"><strong>설계봇:</strong> ${initialMessage}</p>`;
             scrollToBottom();  // 스크롤 하단으로 이동
         }
 
@@ -166,7 +166,7 @@
 
             if (userInput.trim() === "") return;  // 빈 입력 처리
 
-            document.getElementById('messages').innerHTML += `<p><strong>나:</strong> ${userInput}</p>`;
+            document.getElementById('messages').innerHTML += `<p class="user"><strong>나:</strong> ${userInput}</p>`;
             document.getElementById('userInput').value = "";  // 입력 필드 초기화
             scrollToBottom();  // 스크롤 하단으로 이동
 
@@ -181,7 +181,7 @@
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': 'Bearer YOUR_OPENAI_API_KEY'
+                    'Authorization': 'Bearer asst_Mm019YNqP6syW41JyxdrXLDc'
                 },
                 body: JSON.stringify({
                     model: 'gpt-4',
@@ -192,7 +192,7 @@
 
             const data = await apiResponse.json();
             const botMessage = data.choices[0].message.content;
-            document.getElementById('messages').innerHTML += `<p><strong>설계봇:</strong> ${botMessage}</p>`;
+            document.getElementById('messages').innerHTML += `<p class="bot"><strong>설계봇:</strong> ${botMessage}</p>`;
             scrollToBottom();  // 스크롤 하단으로 이동
         }
 
