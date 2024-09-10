@@ -5,11 +5,13 @@ export default async function handler(req, res) {
     }
 
     try {
-        // req.body를 수동으로 파싱
-        const body = JSON.parse(req.body);  // req.body가 이미 JSON 형식이라면 이 줄은 생략 가능합니다.
+        // req.body가 이미 파싱된 JSON 객체로 가정
+        const userMessage = req.body.message;  // 사용자가 보낸 메시지
         
-        const userMessage = body.message;  // 사용자가 보낸 메시지
-        
+        if (!userMessage) {
+            return res.status(400).json({ message: 'Message is required' });
+        }
+
         // OpenAI API 호출
         const response = await fetch('https://api.openai.com/v1/chat/completions', {
             method: 'POST',
@@ -24,9 +26,14 @@ export default async function handler(req, res) {
         });
 
         const data = await response.json();
-        const botMessage = data.choices[0].message.content;
+        
+        if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+            return res.status(500).json({ message: 'Invalid API response' });
+        }
 
+        const botMessage = data.choices[0].message.content;
         return res.status(200).json({ reply: botMessage });
+
     } catch (error) {
         console.error('Error:', error);
         return res.status(500).json({ message: 'Internal Server Error' });
