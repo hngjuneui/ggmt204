@@ -5,12 +5,15 @@ export default async function handler(req, res) {
     }
 
     try {
-        // req.body가 이미 파싱된 JSON 객체로 가정
-        const userMessage = req.body.message;  // 사용자가 보낸 메시지
-        
-        if (!userMessage) {
+        // req.body를 JSON으로 파싱
+        const body = req.body;
+
+        // 만약 req.body가 파싱되지 않았다면
+        if (!body || !body.message) {
             return res.status(400).json({ message: 'Message is required' });
         }
+
+        const userMessage = body.message;  // 사용자가 보낸 메시지
 
         // OpenAI API 호출
         const response = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -25,19 +28,14 @@ export default async function handler(req, res) {
             }),
         });
 
-        // OpenAI 응답이 200대가 아닐 경우 에러 처리
         if (!response.ok) {
-            const errorData = await response.text();  // 텍스트로 에러를 받아서 처리
+            const errorData = await response.text();  // 에러 메시지 추출
             return res.status(response.status).json({ message: 'OpenAI API Error', error: errorData });
         }
 
         const data = await response.json();
-
-        if (!data.choices || !data.choices[0] || !data.choices[0].message) {
-            return res.status(500).json({ message: 'Invalid API response' });
-        }
-
         const botMessage = data.choices[0].message.content;
+
         return res.status(200).json({ reply: botMessage });
 
     } catch (error) {
