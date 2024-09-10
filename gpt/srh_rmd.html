@@ -179,28 +179,18 @@
             document.getElementById('userInput').value = "";  // 입력 필드 초기화
             scrollToBottom();  // 스크롤 하단으로 이동
 
-            // JSON 파일 로드
-            const response = await fetch('chat_config.json');
-            const config = await response.json();
-
-            // 사용자 입력을 messages 배열에 추가
-            config.messages.push({ role: 'user', content: userInput });
-
-            const apiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+            const apiResponse = await fetch('/api/chat', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': 'Bearer sk-6ApT1sGL7mmVqv1eOXWcefKR4fkwsMHBS-7U-sAiR0T3BlbkFJHJcthEbCL5Km5eas4oRbvFl5xgJj4DrRcohuuaSsAA'
                 },
                 body: JSON.stringify({
-                    model: 'gpt-4',
-                    messages: [{ role: 'user', content: userInput }],
-                    assistant_id: 'asst_Mm019YNqP6syW41JyxdrXLDc' 
+                    message: userInput
                 })
             });
 
             const data = await apiResponse.json();
-            const botMessage = data.choices[0].message.content;
+            const botMessage = data.reply;
             document.getElementById('messages').innerHTML += `<p class="bot"><strong>설계봇:</strong> ${botMessage}</p>`;
             scrollToBottom();  // 스크롤 하단으로 이동
         }
