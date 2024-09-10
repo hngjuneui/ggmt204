@@ -25,8 +25,14 @@ export default async function handler(req, res) {
             }),
         });
 
+        // OpenAI 응답이 200대가 아닐 경우 에러 처리
+        if (!response.ok) {
+            const errorData = await response.text();  // 텍스트로 에러를 받아서 처리
+            return res.status(response.status).json({ message: 'OpenAI API Error', error: errorData });
+        }
+
         const data = await response.json();
-        
+
         if (!data.choices || !data.choices[0] || !data.choices[0].message) {
             return res.status(500).json({ message: 'Invalid API response' });
         }
@@ -36,6 +42,6 @@ export default async function handler(req, res) {
 
     } catch (error) {
         console.error('Error:', error);
-        return res.status(500).json({ message: 'Internal Server Error' });
+        return res.status(500).json({ message: 'Internal Server Error', error: error.toString() });
     }
 }
